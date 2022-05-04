@@ -1805,6 +1805,10 @@ class BuiltInFunction(BaseFunction):
                 return RTResult().success(String(text))
         execute_input.arg_names = []
 
+        def execute_Type(self,exec_ctx):
+            return RTResult().success(String(type(exec_ctx.symbol_table.get('value'))))
+        execute_Type.arg_names = ['value']
+
         def execute_input_int(self, exec_ctx):
                 while True:
                         text = input()
@@ -1981,6 +1985,7 @@ BuiltInFunction.run = BuiltInFunction("run")
 BuiltInFunction.String = BuiltInFunction("String")
 BuiltInFunction.Int = BuiltInFunction("Int")
 BuiltInFunction.Float = BuiltInFunction("Float")
+BuiltInFunction.Type = BuiltInFunction("Type")
 
 
 #######################################
@@ -2326,6 +2331,7 @@ global_symbol_table.set("Run", BuiltInFunction.run)
 global_symbol_table.set("Int", BuiltInFunction.Int)
 global_symbol_table.set("String", BuiltInFunction.String)
 global_symbol_table.set("Float", BuiltInFunction.Float)
+global_symbol_table.set("Type", BuiltInFunction.Type)
 
 
 def run(fn, text):
