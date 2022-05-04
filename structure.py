@@ -1796,6 +1796,9 @@ class BuiltInFunction(BaseFunction):
         def execute_Int(self, exec_ctx):
                 return RTResult().success(Number(int(str(exec_ctx.symbol_table.get('value')))))
         execute_Int.arg_names = ['value']
+        def execute_Float(self, exec_ctx):
+                return RTResult().success(Number(float(str(exec_ctx.symbol_table.get('value')))))
+        execute_Float.arg_names = ['value']
 
         def execute_input(self, exec_ctx):
                 text = input()
@@ -1977,6 +1980,7 @@ BuiltInFunction.len = BuiltInFunction("len")
 BuiltInFunction.run = BuiltInFunction("run")
 BuiltInFunction.String = BuiltInFunction("String")
 BuiltInFunction.Int = BuiltInFunction("Int")
+BuiltInFunction.Float = BuiltInFunction("Float")
 
 
 #######################################
@@ -2321,6 +2325,7 @@ global_symbol_table.set("Len", BuiltInFunction.len)
 global_symbol_table.set("Run", BuiltInFunction.run)
 global_symbol_table.set("Int", BuiltInFunction.Int)
 global_symbol_table.set("String", BuiltInFunction.String)
+global_symbol_table.set("Float", BuiltInFunction.Float)
 
 
 def run(fn, text):
