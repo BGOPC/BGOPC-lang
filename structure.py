@@ -145,8 +145,8 @@ KeyWords = [
         'stp',
         'while',
         'function',
-        ':',
-        'end',
+        '{',
+        '}',
         'return',
         'continue',
         'break',
@@ -205,7 +205,7 @@ class Lexer:
                                 self.advance()
                         elif self.current_char in Digits:
                                 tokens.append(self.make_number())
-                        elif self.current_char in Letters + ':':
+                        elif self.current_char in Letters + '{}':
                                 tokens.append(self.make_identifier())
                         elif self.current_char == '"':
                                 tokens.append(self.make_string())
@@ -306,7 +306,7 @@ class Lexer:
                 id_str = ''
                 pos_start = self.pos.copy()
 
-                while self.current_char != None and self.current_char in Letters_Digits + '_:':
+                while self.current_char != None and self.current_char in Letters_Digits + '_{}':
                         id_str += self.current_char
                         self.advance()
 
@@ -956,13 +956,13 @@ class Parser:
                                         return res
                                 else_case = (statements, True)
 
-                                if self.current_tok.matches(KeyWord, 'end'):
+                                if self.current_tok.matches(KeyWord, '}'):
                                         res.register_advancement()
                                         self.advance()
                                 else:
                                         return res.failure(InvalidSyntaxError(
                                                 self.current_tok.pos_start, self.current_tok.pos_end,
-                                                "Expected 'end'"
+                                                "Expected '}'"
                                         ))
                         else:
                                 expr = res.register(self.statement())
@@ -1006,10 +1006,10 @@ class Parser:
                 if res.error:
                         return res
 
-                if not self.current_tok.matches(KeyWord, ':'):
+                if not self.current_tok.matches(KeyWord, '{'):
                         return res.failure(InvalidSyntaxError(
                                 self.current_tok.pos_start, self.current_tok.pos_end,
-                                f"Expected ':'"
+                                "Expected '{'"
                         ))
 
                 res.register_advancement()
@@ -1024,7 +1024,7 @@ class Parser:
                                 return res
                         cases.append((condition, statements, True))
 
-                        if self.current_tok.matches(KeyWord, 'end'):
+                        if self.current_tok.matches(KeyWord, '}'):
                                 res.register_advancement()
                                 self.advance()
                         else:
@@ -1105,10 +1105,10 @@ class Parser:
                 else:
                         step_value = None
 
-                if not self.current_tok.matches(KeyWord, ':'):
+                if not self.current_tok.matches(KeyWord, '{'):
                         return res.failure(InvalidSyntaxError(
                                 self.current_tok.pos_start, self.current_tok.pos_end,
-                                f"Expected ':'"
+                                "Expected '{'"
                         ))
 
                 res.register_advancement()
@@ -1122,10 +1122,10 @@ class Parser:
                         if res.error:
                                 return res
 
-                        if not self.current_tok.matches(KeyWord, 'end'):
+                        if not self.current_tok.matches(KeyWord, '}'):
                                 return res.failure(InvalidSyntaxError(
                                         self.current_tok.pos_start, self.current_tok.pos_end,
-                                        f"Expected 'end'"
+                                        "Expected '}'"
                                 ))
 
                         res.register_advancement()
@@ -1155,10 +1155,10 @@ class Parser:
                 if res.error:
                         return res
 
-                if not self.current_tok.matches(KeyWord, ':'):
+                if not self.current_tok.matches(KeyWord, '{'):
                         return res.failure(InvalidSyntaxError(
                                 self.current_tok.pos_start, self.current_tok.pos_end,
-                                f"Expected ':'"
+                                "Expected '{'"
                         ))
 
                 res.register_advancement()
@@ -1172,10 +1172,10 @@ class Parser:
                         if res.error:
                                 return res
 
-                        if not self.current_tok.matches(KeyWord, 'end'):
+                        if not self.current_tok.matches(KeyWord, '}'):
                                 return res.failure(InvalidSyntaxError(
                                         self.current_tok.pos_start, self.current_tok.pos_end,
-                                        f"Expected 'end'"
+                                        "Expected '}'"
                                 ))
 
                         res.register_advancement()
@@ -1284,10 +1284,10 @@ class Parser:
                 if res.error:
                         return res
 
-                if not self.current_tok.matches(KeyWord, 'end'):
+                if not self.current_tok.matches(KeyWord, '}'):
                         return res.failure(InvalidSyntaxError(
                                 self.current_tok.pos_start, self.current_tok.pos_end,
-                                f"Expected 'end'"
+                                "Expected '}'"
                         ))
 
                 res.register_advancement()
