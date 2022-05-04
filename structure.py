@@ -1790,6 +1790,12 @@ class BuiltInFunction(BaseFunction):
         def execute_print_ret(self, exec_ctx):
                 return RTResult().success(String(str(exec_ctx.symbol_table.get('value'))))
         execute_print_ret.arg_names = ['value']
+        def execute_String(self, exec_ctx):
+                return RTResult().success(String(str(exec_ctx.symbol_table.get('value'))))
+        execute_String.arg_names = ['value']
+        def execute_Int(self, exec_ctx):
+                return RTResult().success(Number(int(str(exec_ctx.symbol_table.get('value')))))
+        execute_Int.arg_names = ['value']
 
         def execute_input(self, exec_ctx):
                 text = input()
@@ -1969,6 +1975,9 @@ BuiltInFunction.pop = BuiltInFunction("pop")
 BuiltInFunction.extend = BuiltInFunction("extend")
 BuiltInFunction.len = BuiltInFunction("len")
 BuiltInFunction.run = BuiltInFunction("run")
+BuiltInFunction.String = BuiltInFunction("String")
+BuiltInFunction.Int = BuiltInFunction("Int")
+
 
 #######################################
 # CONTEXT
@@ -2310,6 +2319,8 @@ global_symbol_table.set("pop", BuiltInFunction.pop)
 global_symbol_table.set("Extend", BuiltInFunction.extend)
 global_symbol_table.set("Len", BuiltInFunction.len)
 global_symbol_table.set("Run", BuiltInFunction.run)
+global_symbol_table.set("Int", BuiltInFunction.Int)
+global_symbol_table.set("String", BuiltInFunction.String)
 
 
 def run(fn, text):
