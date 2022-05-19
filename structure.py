@@ -1927,7 +1927,7 @@ class BuiltInFunction(BaseFunction):
 
         def execute_run(self, exec_ctx):
                 fn = exec_ctx.symbol_table.get("fn")
-                if Path(str(fn)).suffix.lower() == '.opc':
+                if Path(str(fn)).suffix.lower() == '.lopc':
 
                     if not isinstance(fn, String):
                             return RTResult().failure(RTError(
