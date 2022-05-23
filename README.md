@@ -9,9 +9,18 @@ else it will return runtime error and says incorrect extension
 you can use One line code with runnig Shell.py
 if you wanna run a file you should type
 ``Run("filename.lopc")``
-
-screenshots:
-
-![image](https://user-images.githubusercontent.com/94793764/166748766-94de51e3-2655-40f6-a765-8471fda4769d.png)
-
-![image](https://user-images.githubusercontent.com/94793764/166766244-ccc399ff-2153-433a-a245-dca73db51f62.png)
+commands:
+for variable = value to last value stp 4 {
+  codes
+}
+while condition {
+   codes
+}
+var to set variable
+if else and elif:
+if condition {
+  codes
+} 
+else {
+  codes
+} 
