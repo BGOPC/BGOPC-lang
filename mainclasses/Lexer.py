@@ -47,7 +47,7 @@ class Lexer:
                 char = self.current_char
                 self.advance()
                 return [], IllegalCharError(pos_start, self.pos, "'" + char + "'")
-
+        tokens.append(Token(enums.EOF, pos_start=self.pos))
         return tokens, None
 
     def make_number(self):

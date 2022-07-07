@@ -5,4 +5,3 @@ class NumberNode:
 
     def __repr__(self) -> str:
         return f"{self.tok}"
-
