@@ -25,22 +25,22 @@ class Lexer:
             elif self.current_char in DIGITS:
                 tokens.append(self.make_number())
             elif self.current_char == '+':
-                tokens.append(Token(enums.PLUS))
+                tokens.append(Token(enums.PLUS, pos_start = self.pos))
                 self.advance()
             elif self.current_char == '-':
-                tokens.append(Token(enums.MIN))
+                tokens.append(Token(enums.MIN, pos_start = self.pos))
                 self.advance()
             elif self.current_char == '*':
-                tokens.append(Token(enums.MUL))
+                tokens.append(Token(enums.MUL, pos_start = self.pos))
                 self.advance()
             elif self.current_char == '/':
-                tokens.append(Token(enums.DIV))
+                tokens.append(Token(enums.DIV, pos_start = self.pos))
                 self.advance()
             elif self.current_char == '(':
-                tokens.append(Token(enums.LPAREN))
+                tokens.append(Token(enums.LPAREN, pos_start = self.pos))
                 self.advance()
             elif self.current_char == ')':
-                tokens.append(Token(enums.RPAREN))
+                tokens.append(Token(enums.RPAREN, pos_start = self.pos))
                 self.advance()
             else:
                 pos_start = self.pos.copy()
@@ -53,6 +53,7 @@ class Lexer:
     def make_number(self):
         num_str = ''
         dot_count = 0
+        pos_start = self.pos.copy()
 
         while self.current_char != None and self.current_char in DIGITS + '.':
             if self.current_char == '.':
@@ -65,6 +66,6 @@ class Lexer:
             self.advance()
 
         if dot_count == 0:
-            return Token(enums.INT, int(num_str))
+            return Token(enums.INT, int(num_str),pos_start=pos_start, pos_end=self.pos)
         else:
-            return Token(enums.FLOAT, float(num_str))
+            return Token(enums.FLOAT, float(num_str),pos_start=pos_start, pos_end=self.pos)
