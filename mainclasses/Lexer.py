@@ -1,7 +1,9 @@
-from .token import *
 from .Errors.Error import Error
 from .Errors.IllegalCharError import IllegalCharError
+from .token import *
 from .utils.position import Position
+
+
 class Lexer:
     def __init__(self, fn, text):
         self.fn = fn
@@ -54,7 +56,8 @@ class Lexer:
 
         while self.current_char != None and self.current_char in DIGITS + '.':
             if self.current_char == '.':
-                if dot_count == 1: break
+                if dot_count == 1:
+                    break
                 dot_count += 1
                 num_str += '.'
             else:

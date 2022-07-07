@@ -4,8 +4,8 @@ class Error:
         self.pos_end = pos_end
         self.error_name = error_name
         self.details = details
-    
+
     def as_string(self):
-        result  = f'{self.error_name}: {self.details}\n'
+        result = f'{self.error_name}: {self.details}\n'
         result += f'File {self.pos_start.fn}, line {self.pos_start.ln + 1}, column {self.pos_start.col}'
         return result
