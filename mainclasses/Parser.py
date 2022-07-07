@@ -9,4 +9,5 @@ class Parser:
     def advance(self):
         self.tok_idx += 1
         if self.tok_idx > len(self.tokens):
-            pass
+            return None
+        return  self.tokens[self.tok_idx]
