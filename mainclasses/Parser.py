@@ -1,5 +1,6 @@
 from .utils.Nodes.BinOpNode import BinOpNode
 from .utils.Nodes.NumberNode import NumberNode
+from .utils.Nodes.UnaryOpNode import UnaryOpNode
 from .token import enums, Token
 class Parser:
     def __init__(self, tokens):
@@ -21,7 +22,8 @@ class Parser:
         return self.binop((enums.PLUS,enums.MIN), self.term)
     def term(self):
         return self.binop((enums.MUL,enums.DIV), self.factor)
-
+    def unary(self):
+        return UnaryOpNode()
 
     def binop(self, toks, func):
         left = func()
