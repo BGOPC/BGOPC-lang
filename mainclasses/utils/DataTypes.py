@@ -20,9 +20,8 @@ class Number:
     def div(self, number):
         if isinstance(number, Number):
             if number.value == 0:
-                return None,RTError(
-                        number.pos_start, number.pos_end,
-                        "Division By Zero"
+                return None,RTError(number.pos_start, number.pos_end,).divbyzero(
+                        f"You Can not Divide {self.value} by 0"
                     )
             return Number(self.value / number.value), None
 
