@@ -1,7 +1,7 @@
 from .Lexer import Lexer
 from .Parser import Parser
 from .Interpreter import Interpreter
-
+from .utils.Context import Context
 def run(fn, text):
     lexer = Lexer(fn, text)
     tokens, error = lexer.make_tokens()
@@ -12,5 +12,6 @@ def run(fn, text):
     if ast.error: return None, ast.error
 
     interpreter = Interpreter()
-    res = interpreter.visit(ast.node)
+    context = Context("<program>")
+    res = interpreter.visit(ast.node, context)
     return res.value, res.error
