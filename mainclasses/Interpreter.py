@@ -24,6 +24,7 @@ class Interpreter:
             return res.failure(RTError(node.pos_start,node.pos_end, context=context).varnotdef(
                 f"Variable {var_name} is not defined",
             ))
+        value = value.copy().set_pos(node.pos_start, node.pos_end)
         return res.success(value)
 
 
@@ -47,7 +48,7 @@ class Interpreter:
         left = res.register(self.visit(node.left_node, context))
         if res.error: return res
         right = res.register(self.visit(node.right_node, context))
-
+        if res.error: return res
         if node.op_tok.type == enums.PLUS:
             result, error = left.add(right)
         elif node.op_tok.type == enums.MIN:

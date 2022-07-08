@@ -4,6 +4,9 @@ LETTERS = string.ascii_letters
 DIGITS_LETTERS = DIGITS+LETTERS
 KEYWORDS = [
     "Var", "var",
+    "And", "and",
+    "Or", "or",
+    "Not", "not"
 ]
 
 class enums:
@@ -20,6 +23,11 @@ class enums:
     IDENTIFIER = "Identifier"
     KEYWORD = "Keyword"
     EQ = "EQ"
+    EE = "EE"
+    LT = "LT"
+    LTE = "LTE"
+    GT = "GT"
+    GTE = "GTE"
 
 
 class Token:
