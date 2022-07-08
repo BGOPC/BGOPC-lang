@@ -45,7 +45,7 @@ class Interpreter:
 
     def visit_BinOpNode(self, node, context):
         res = RTResult()
-        left = res.register(self.visit(node.left_node, context))
+        left: Number = res.register(self.visit(node.left_node, context))
         if res.error: return res
         right = res.register(self.visit(node.right_node, context))
         if res.error: return res
@@ -59,6 +59,22 @@ class Interpreter:
             result, error = left.mul(right)
         elif node.op_tok.type == enums.POW:
             result, error = left.pow(right)
+        elif node.op_tok.type == enums.EE:
+            result, error = left.get_comparison_eq(right)
+        elif node.op_tok.type == enums.NE:
+            result, error = left.get_comparison_ne(right)
+        elif node.op_tok.type == enums.LT:
+            result, error = left.get_comparison_lt(right)
+        elif node.op_tok.type == enums.GT:
+            result, error = left.get_comparison_gt(right)
+        elif node.op_tok.type == enums.LTE:
+            result, error = left.get_comparison_lte(right)
+        elif node.op_tok.type == enums.GTE:
+            result, error = left.get_comparison_gte(right)
+        elif node.op_tok.matches(enums.KEYWORD, 'and') or node.op_tok.matches(enums.KEYWORD, 'And'):
+            result, error = left.anded_by(right)
+        elif node.op_tok.matches(enums.KEYWORD, 'Or') or node.op_tok.matches(enums.KEYWORD, 'or'):
+            result, error = left.ored_by(right)
 
         if error:
             return res.failure(error)
@@ -67,11 +83,13 @@ class Interpreter:
 
     def visit_UnaryOpNode(self, node, context):
         res = RTResult()
-        number = res.register(self.visit(node.node, context))
+        number:Number = res.register(self.visit(node.node, context))
         if res.error: return res
         error = None
         if node.op_tok.type == enums.MIN:
             number, error = number.mul(Number(-1))
+        elif node.op_tok.matches(enums.KEYWORD, 'Not') or node.op_tok.matches(enums.KEYWORD, 'not'):
+            number, error = number.notted()
         if error:
             return res.failure(error)
         return res.success(number.set_pos(node.pos_start, node.pos_end))

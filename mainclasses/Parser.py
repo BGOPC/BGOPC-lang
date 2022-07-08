@@ -93,7 +93,7 @@ class Parser:
             if res.error: return res
             return res.success(VarAssignNode(var_name, expr))
 
-        node = res.register(self.binop(self.term,(enums.PLUS,enums.MIN)))
+        node = res.register(self.binop(self.comp_expr,((enums.KEYWORD , "and"), (enums.KEYWORD , "or"),(enums.KEYWORD , "And"), (enums.KEYWORD , "Or"))))
         if res.error:
             return res.failure(
                 InvalidSyntaxError(
@@ -116,7 +116,7 @@ class Parser:
         left = res.register(func_a())
         if res.error: return res
 
-        while self.cc.type in ops:
+        while self.cc.type in ops or (self.cc.type, self.cc.value) in ops:
             op_tok = self.cc
             res.register_advancement()
             self.advance()
@@ -125,7 +125,28 @@ class Parser:
             left = BinOpNode(left, op_tok, right)
 
         return res.success(left)
+    def comp_expr(self):
+        res = ParseResult()
+        if self.cc.matches(enums.KEYWORD, "Not") or self.cc.matches(enums.KEYWORD, "not"):
+            op_tok = self.cc
+            res.register_advancement()
+            self.advance()
+            node = res.register(self.comp_expr())
+            if res.error: return res
+            return res.success(UnaryOpNode(op_tok=op_tok, node=node))
+        node = res.register(self.binop(self.arith_expr, (enums.EE, enums.NE, enums.LT, enums.LTE, enums.GT, enums.GTE)))
+        if res.error:
+            return res.failure(
+             InvalidSyntaxError(
+            self.cc.pos_start, self.cc.pos_end,
+            "Expected int, float, identifier,'+', '-', '(' or 'not'"
+            )
+        )
+        return res.success(node)
 
+
+    def arith_expr(self):
+        return self.binop(self.term, (enums.PLUS, enums.MIN))
     def parse(self):
         res = self.expr()
         if not res.error and self.cc.type != enums.EOF:
