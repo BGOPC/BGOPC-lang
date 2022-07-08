@@ -1,5 +1,10 @@
+import string
 DIGITS = "0123456789"
-
+LETTERS = string.ascii_letters
+DIGITS_LETTERS = DIGITS+LETTERS
+KEYWORDS = [
+    "Var"
+]
 
 class enums:
     INT = "Integer"
@@ -12,6 +17,9 @@ class enums:
     RPAREN = "Right Parenthesis"
     EOF = "End of File"
     POW = "Power"
+    IDENTIFIER = "Identifier"
+    KEYWORD = "Keyword"
+    EQ = "EQ"
 
 
 class Token:
@@ -30,3 +38,5 @@ class Token:
     def __repr__(self):
         if self.value: return f'{self.type}:{self.value}'
         return f'{self.type}'
+    def matches(self,type, val):
+        return self.type == type and self.value == val
