@@ -14,6 +14,34 @@ class Parser:
             self.cc = self.tokens[self.tok_idx]
         return self.cc
 
+    def atom(self):
+        res = ParseResult()
+        tok = self.cc
+
+        if tok.type in (enums.INT, enums.FLOAT):
+            res.register(self.advance())
+            return res.success(NumberNode(tok))
+
+        elif tok.type == enums.LPAREN:
+            res.register(self.advance())
+            expr = res.register(self.expr())
+            if res.error: return res
+            if self.cc.type == enums.RPAREN:
+                res.register(self.advance())
+                return res.success(expr)
+            else:
+                return res.failure(InvalidSyntaxError(
+                    self.cc.pos_start, self.cc.pos_end,
+                    "Expected ')'"
+                ))
+
+        return res.failure(InvalidSyntaxError(
+            tok.pos_start, tok.pos_end,
+            "Expected int, float, '+', '-' or '('"
+        ))
+    def power(self):
+        return self.binop(self.atom, (enums.POW, ), self.factor)
+
     def factor(self):
         res = ParseResult()
         tok = self.cc
@@ -23,48 +51,31 @@ class Parser:
             factor = res.register(self.factor())
             if res.error: return res
             return res.success(UnaryOpNode(tok, factor))
-
-        elif tok.type in (enums.INT, enums.FLOAT):
-            res.register(self.advance())
-            return res.success(NumberNode(tok))
-
-        elif tok.type == enums.LPAREN:
-                res.register(self.advance())
-                expr = res.register(self.expr())
-                if res.error: return res
-                if self.cc.type == enums.RPAREN:
-                    res.register(self.advance())
-                    return res.success(expr)
-                else:
-                    return res.failure(InvalidSyntaxError(
-                        self.cc.pos_start, self.cc.pos_end,
-                        "Expected ')'"
-                    ))
-
-        return res.failure(InvalidSyntaxError(
-            tok.pos_start, tok.pos_end,
-            "Expected int or float"
-            ))
+        return self.power()
 
 
     def expr(self):
-        return self.binop((enums.PLUS,enums.MIN, enums.POW), self.term)
+        return self.binop(self.term,(enums.PLUS,enums.MIN))
 
 
     def term(self):
-        return self.binop((enums.MUL,enums.DIV), self.factor)
+        return self.binop(self.factor, (enums.MUL,enums.DIV))
 
-    def binop(self, toks, func):
+    def binop(self, func_a, ops, func_b=None):
+        if func_b == None:
+            func_b = func_a
+
         res = ParseResult()
-        left = res.register(func())
+        left = res.register(func_a())
         if res.error: return res
 
-        while self.cc.type in toks:
+        while self.cc.type in ops:
             op_tok = self.cc
             res.register(self.advance())
-            right = res.register(func())
+            right = res.register(func_b())
             if res.error: return res
             left = BinOpNode(left, op_tok, right)
+
         return res.success(left)
 
     def parse(self):
