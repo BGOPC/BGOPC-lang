@@ -11,6 +11,7 @@ class enums:
     LPAREN = "Left Parenthesis"
     RPAREN = "Right Parenthesis"
     EOF = "End of File"
+    POW = "Power"
 
 
 class Token:

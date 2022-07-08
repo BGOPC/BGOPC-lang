@@ -48,7 +48,7 @@ class Parser:
 
 
     def expr(self):
-        return self.binop((enums.PLUS,enums.MIN), self.term)
+        return self.binop((enums.PLUS,enums.MIN, enums.POW), self.term)
 
 
     def term(self):
@@ -73,7 +73,7 @@ class Parser:
             return res.failure(
                 InvalidSyntaxError(
                     self.cc.pos_start, self.cc.pos_end,
-                    "Excepted '+', '-', '*' or '/'"
+                    "Excepted '+', '-', '*', '/' or '^' "
                 )
             )
         return res

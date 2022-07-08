@@ -33,6 +33,8 @@ class Interpreter:
             result, error = left.div(right)
         elif node.op_tok.type == enums.MUL:
             result, error = left.mul(right)
+        elif node.op_tok.type == enums.POW:
+            result, error = left.pow(right)
 
         if error:
             return res.failure(error)

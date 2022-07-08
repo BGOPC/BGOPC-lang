@@ -30,6 +30,9 @@ class Number:
 
                     )
             return Number(self.value / number.value).set_context(self.context), None
+    def pow(self, number):
+        if isinstance(number, Number):
+            return Number(self.value ** number.value).set_context(self.context), None
 
     def __repr__(self):
         return str(self.value)

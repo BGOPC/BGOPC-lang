@@ -31,8 +31,7 @@ class Lexer:
                 tokens.append(Token(enums.MIN, pos_start = self.pos))
                 self.advance()
             elif self.current_char == '*':
-                tokens.append(Token(enums.MUL, pos_start = self.pos))
-                self.advance()
+                tokens.append(self.make_pom())
             elif self.current_char == '/':
                 tokens.append(Token(enums.DIV, pos_start = self.pos))
                 self.advance()
@@ -69,3 +68,11 @@ class Lexer:
             return Token(enums.INT, int(num_str),pos_start=pos_start, pos_end=self.pos)
         else:
             return Token(enums.FLOAT, float(num_str),pos_start=pos_start, pos_end=self.pos)
+
+    def make_pom(self): #Pow or Mul
+        self.advance()
+        ncc = self.current_char
+        if ncc == "*":
+            self.advance()
+            return Token(enums.POW, pos_start=self.pos)
+        return Token(enums.MUL, pos_start=self.pos)
