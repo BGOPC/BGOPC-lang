@@ -62,7 +62,7 @@ class Parser:
     def expr(self):
         res = ParseResult()
 
-        if self.cc.matches(enums.KEYWORD, 'Var'):
+        if self.cc.matches(enums.KEYWORD, 'Var') or self.cc.matches(enums.KEYWORD, 'var'):
             res.register(self.advance())
 
             if self.cc.type != enums.IDENTIFIER:

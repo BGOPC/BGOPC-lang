@@ -3,7 +3,7 @@ DIGITS = "0123456789"
 LETTERS = string.ascii_letters
 DIGITS_LETTERS = DIGITS+LETTERS
 KEYWORDS = [
-    "Var"
+    "Var", "var",
 ]
 
 class enums:
