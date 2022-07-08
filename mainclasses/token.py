@@ -23,6 +23,7 @@ class enums:
     IDENTIFIER = "Identifier"
     KEYWORD = "Keyword"
     EQ = "EQ"
+    NE = "Not Equals"
     EE = "EE"
     LT = "LT"
     LTE = "LTE"
