@@ -7,6 +7,8 @@ from .utils.DataTypes import *
 global_symboltable = SymbolTable()
 global_symboltable.set("null", Number(0))
 global_symboltable.set("nil", Number(0))
+global_symboltable.set("false", Number(0))
+global_symboltable.set("true", Number(1))
 
 def run(fn, text):
     lexer = Lexer(fn, text)
