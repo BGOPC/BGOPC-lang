@@ -13,3 +13,4 @@ class RTResult:
         return self
     def failure(self, error):
         self.error = error
+        return self

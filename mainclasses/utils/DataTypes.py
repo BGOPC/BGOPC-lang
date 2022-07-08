@@ -1,3 +1,4 @@
+from ..Errors.RTError import RTError
 class Number:
     def __init__(self, value):
         self.value = value
@@ -9,16 +10,21 @@ class Number:
 
     def add(self, number):
         if isinstance(number, Number):
-            return Number(self.value + number.value)
+            return Number(self.value + number.value), None
     def sub(self, number):
         if isinstance(number, Number):
-            return Number(self.value - number.value)
+            return Number(self.value - number.value), None
     def mul(self, number):
         if isinstance(number, Number):
-            return Number(self.value * number.value)
+            return Number(self.value * number.value), None
     def div(self, number):
         if isinstance(number, Number):
-            return Number(self.value / number.value)
+            if number.value == 0:
+                return None,RTError(
+                        number.pos_start, number.pos_end,
+                        "Division By Zero"
+                    )
+            return Number(self.value / number.value), None
 
     def __repr__(self):
         return str(self.value)

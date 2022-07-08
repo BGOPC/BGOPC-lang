@@ -13,4 +13,4 @@ def run(fn, text):
 
     interpreter = Interpreter()
     res = interpreter.visit(ast.node)
-    return res, None
+    return res.value, res.error
