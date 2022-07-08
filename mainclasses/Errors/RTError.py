@@ -30,7 +30,12 @@ class RTError(Error):
 
     def divbyzero(self, msg):
         return DivByZero(self.pos_start, self.pos_end, msg, self.context)
+    def varnotdef(self, msg):
+        return VarNotDefined(self.pos_start, self.pos_end, msg, self.context)
 
 class DivByZero(RTError):
     def __init__(self, pos_start, pos_end, message,context=None):
         super().__init__(pos_start, pos_end, "Division By Zero", message, context)
+class VarNotDefined(RTError):
+    def __init__(self, pos_start, pos_end, message,context=None):
+        super().__init__(pos_start, pos_end, "Variable not Defined", message, context)

@@ -1,6 +1,7 @@
 from .utils.Nodes.BinOpNode import BinOpNode
 from .utils.Nodes.NumberNode import NumberNode
 from .utils.Nodes.UnaryOpNode import UnaryOpNode
+from .utils.Nodes.VarNodes import *
 from .token import enums, Token
 from .Errors.InvalidSyntaxError import InvalidSyntaxError
 class Parser:
@@ -11,7 +12,7 @@ class Parser:
     def advance(self):
         self.tok_idx += 1
         if self.tok_idx < len(self.tokens):
-            self.cc = self.tokens[self.tok_idx]
+            self.cc: Token = self.tokens[self.tok_idx]
         return self.cc
 
     def atom(self):
@@ -21,6 +22,10 @@ class Parser:
         if tok.type in (enums.INT, enums.FLOAT):
             res.register(self.advance())
             return res.success(NumberNode(tok))
+
+        elif tok.type in enums.IDENTIFIER:
+            res.register(self.advance())
+            return res.success(VarAccessNode(tok))
 
         elif tok.type == enums.LPAREN:
             res.register(self.advance())
@@ -55,6 +60,31 @@ class Parser:
 
 
     def expr(self):
+        res = ParseResult()
+
+        if self.cc.matches(enums.KEYWORD, 'Var'):
+            res.register(self.advance())
+
+            if self.cc.type != enums.IDENTIFIER:
+                return res.failure(InvalidSyntaxError(
+                    self.cc.pos_start, self.cc.pos_end,
+                    "Expected identifier"
+                ))
+
+            var_name = self.cc
+            res.register(self.advance())
+
+            if self.cc.type != enums.EQ:
+                return res.failure(InvalidSyntaxError(
+                    self.cc.pos_start, self.cc.pos_end,
+                    "Expected '='"
+                ))
+
+            res.register(self.advance())
+            expr = res.register(self.expr())
+            if res.error: return res
+            return res.success(VarAssignNode(var_name, expr))
+
         return self.binop(self.term,(enums.PLUS,enums.MIN))
 
 

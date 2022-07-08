@@ -7,6 +7,7 @@ from .utils.DataTypes import *
 global_symboltable = SymbolTable()
 global_symboltable.set("null", Number(0))
 global_symboltable.set("nil", Number(0))
+
 def run(fn, text):
     lexer = Lexer(fn, text)
     tokens, error = lexer.make_tokens()

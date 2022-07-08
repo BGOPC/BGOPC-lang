@@ -3,4 +3,4 @@ class Context:
         self.name = name
         self.parent = parent
         self.parent_entry_pos = parent_entry
-        
+        self.symbol_table = None
