@@ -1,6 +1,7 @@
 from .utils.Nodes.BinOpNode import BinOpNode
 from .utils.Nodes.NumberNode import NumberNode
 from .utils.Nodes.UnaryOpNode import UnaryOpNode
+from .utils.Nodes.IfNodes import *
 from .utils.Nodes.VarNodes import *
 from .token import enums, Token
 from .Errors.InvalidSyntaxError import InvalidSyntaxError
@@ -43,7 +44,10 @@ class Parser:
                     self.cc.pos_start, self.cc.pos_end,
                     "Expected ')'"
                 ))
-
+        elif  tok.matches(enums.KEYWORD, "If") or tok.matches(enums.KEYWORD, "if"):
+            if_expr = res.register(self.if_expr())
+            if res.error: return res
+            return res.success(if_expr)
         return res.failure(InvalidSyntaxError(
             tok.pos_start, tok.pos_end,
             "Expected int, float, identifier,'+', '-' or '('"
@@ -103,7 +107,71 @@ class Parser:
             )
 
         return res.success(node)
+    def if_expr(self):
+        res = ParseResult()
+        cases = []
+        else_case = None
 
+        if not (self.cc.matches(enums.KEYWORD, 'If') or self.cc.matches(enums.KEYWORD, "if")):
+            return res.failure(InvalidSyntaxError(
+                self.cc.pos_start, self.cc.pos_end,
+                f"Expected 'IF'"
+            ))
+
+        res.register_advancement()
+        self.advance()
+
+        condition = res.register(self.expr())
+        if res.error: return res
+
+        if not self.cc.matches(enums.KEYWORD, 'then'):
+            return res.failure(InvalidSyntaxError(
+                self.cc.pos_start, self.cc.pos_end,
+                "Expected 'then' ",
+            ))
+
+        res.register_advancement()
+        self.advance()
+
+        expr = res.register(self.expr())
+        if res.error: return res
+        cases.append((condition, expr))
+
+        while self.cc.matches(enums.KEYWORD, 'elseif') or self.cc.matches(enums.KEYWORD, "ElseIf"):
+            res.register_advancement()
+            self.advance()
+
+            condition = res.register(self.expr())
+            if res.error: return res
+
+            if not self.cc.matches(enums.KEYWORD, 'then'):
+                return res.failure(InvalidSyntaxError(
+                    self.cc.pos_start, self.cc.pos_end,
+                    "Expected 'then'"
+                ))
+
+            res.register_advancement()
+            self.advance()
+
+            expr = res.register(self.expr())
+            if res.error: return res
+            cases.append((condition, expr))
+
+        if self.cc.matches(enums.KEYWORD, 'else') or self.cc.matches(enums.KEYWORD, "Else"):
+            res.register_advancement()
+            self.advance()
+            if not self.cc.matches(enums.KEYWORD, 'then'):
+                return res.failure(InvalidSyntaxError(
+                    self.cc.pos_start, self.cc.pos_end,
+                    "Expected 'then'"
+                ))
+            res.register_advancement()
+            self.advance()
+            else_case = res.register(self.expr())
+            
+            if res.error: return res
+
+        return res.success(IfNode(cases, else_case))
 
     def term(self):
         return self.binop(self.factor, (enums.MUL,enums.DIV))

@@ -2,6 +2,7 @@ from mainclasses.utils.Nodes.VarNodes import VarAccessNode, VarAssignNode
 from .utils.Nodes.NumberNode import NumberNode
 from .utils.Nodes.BinOpNode import BinOpNode
 from .utils.Nodes.UnaryOpNode import UnaryOpNode
+from .utils.Nodes.IfNodes import *
 from .utils.DataTypes import *
 from .token import enums, Token
 from .RTResult import RTResult
@@ -93,3 +94,19 @@ class Interpreter:
         if error:
             return res.failure(error)
         return res.success(number.set_pos(node.pos_start, node.pos_end))
+    
+    def visit_IfNode(self, node:IfNode, context):
+        res = RTResult()
+        for condition,expr in node.cases:
+            cond_val:Number = res.register(self.visit(condition, context))
+            if res.error: return res
+
+            if cond_val.is_true():
+                expr_val = res.register(self.visit(expr, context))
+                if res.error: return res
+                return res.success(expr_val)
+        if node.else_case:
+            else_val = res.register(self.visit(node.else_case, context))
+            if res.error: return res
+            return res.success(else_val)
+        return res.success(None)

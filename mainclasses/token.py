@@ -6,7 +6,10 @@ KEYWORDS = [
     "Var", "var",
     "And", "and",
     "Or", "or",
-    "Not", "not"
+    "Not", "not",
+    "If", "if","then","}",
+    "else", "Else",
+    "ElseIf", "elseif",
 ]
 
 class enums:

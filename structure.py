@@ -6,5 +6,5 @@ while True:
 
     if err:
         print(err.as_string())
-    else:
+    elif res:
         print(res)
