@@ -10,6 +10,10 @@ KEYWORDS = [
     "If", "if","then","}",
     "else", "Else",
     "ElseIf", "elseif",
+    "to","To",
+    "stp",
+    "For","for",
+    "while", "While",
 ]
 
 class enums:
