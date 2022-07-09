@@ -1,3 +1,4 @@
+from traceback import format_exc
 from .utils.Nodes.BinOpNode import BinOpNode
 from .utils.Nodes.NumberNode import NumberNode
 from .utils.Nodes.UnaryOpNode import UnaryOpNode
@@ -49,6 +50,16 @@ class Parser:
             if_expr = res.register(self.if_expr())
             if res.error: return res
             return res.success(if_expr)
+
+        elif tok.matches(enums.KEYWORD, "for") or tok.matches(enums.KEYWORD, "For"):
+            for_expr = res.register(self.for_expr())
+            if res.error: return res
+            return res.success(for_expr)
+        elif tok.matches(enums.KEYWORD, "while") or tok.matches(enums.KEYWORD, "While"):
+            while_expr = res.register(self.while_expr())
+            if res.error: return res
+            return res.success(while_expr)
+
         return res.failure(InvalidSyntaxError(
             tok.pos_start, tok.pos_end,
             "Expected int, float, identifier,'+', '-' or '('"
@@ -179,28 +190,28 @@ class Parser:
     def for_expr(self):
         res = ParseResult()
 
-        if not( self.current_tok.matches(enums.KEYWORD, 'for') or  self.current_tok.matches(enums.KEYWORD, 'For')):
+        if not( self.cc.matches(enums.KEYWORD, 'for') or  self.cc.matches(enums.KEYWORD, 'For')):
             return res.failure(InvalidSyntaxError(
-                self.current_tok.pos_start, self.current_tok.pos_end,
+                self.cc.pos_start, self.cc.pos_end,
                 f"Expected 'FOR'"
             ))
 
         res.register_advancement()
         self.advance()
 
-        if self.current_tok.type != enums.IDENTIFIER:
+        if self.cc.type != enums.IDENTIFIER:
             return res.failure(InvalidSyntaxError(
-                self.current_tok.pos_start, self.current_tok.pos_end,
+                self.cc.pos_start, self.cc.pos_end,
                 f"Expected identifier"
             ))
 
-        var_name = self.current_tok
+        var_name = self.cc
         res.register_advancement()
         self.advance()
 
-        if self.current_tok.type != enums.EQ:
+        if self.cc.type != enums.EQ:
             return res.failure(InvalidSyntaxError(
-                self.current_tok.pos_start, self.current_tok.pos_end,
+                self.cc.pos_start, self.cc.pos_end,
                 f"Expected '='"
             ))
         
@@ -210,10 +221,10 @@ class Parser:
         start_value = res.register(self.expr())
         if res.error: return res
 
-        if not (self.current_tok.matches(enums.KEYWORD, 'to') or  self.current_tok.matches(enums.KEYWORD, 'To')):
+        if not (self.cc.matches(enums.KEYWORD, 'to') or  self.cc.matches(enums.KEYWORD, 'To')):
             return res.failure(InvalidSyntaxError(
-                self.current_tok.pos_start, self.current_tok.pos_end,
-                f"Expected 'TO'"
+                self.cc.pos_start, self.cc.pos_end,
+                f"Expected 'to'"
             ))
         
         res.register_advancement()
@@ -222,7 +233,7 @@ class Parser:
         end_value = res.register(self.expr())
         if res.error: return res
 
-        if self.current_tok.matches(enums.KEYWORD, 'stp'):
+        if self.cc.matches(enums.KEYWORD, 'stp'):
             res.register_advancement()
             self.advance()
 
@@ -231,9 +242,9 @@ class Parser:
         else:
             step_value = None
 
-        if not self.current_tok.matches(enums.KEYWORD, 'then'):
+        if not self.cc.matches(enums.KEYWORD, 'then'):
             return res.failure(InvalidSyntaxError(
-                self.current_tok.pos_start, self.current_tok.pos_end,
+                self.cc.pos_start, self.cc.pos_end,
                 f"Expected 'then'"
             ))
 
@@ -248,10 +259,10 @@ class Parser:
     def while_expr(self):
         res = ParseResult()
 
-        if not self.current_tok.matches(enums.KEYWORD, 'WHILE'):
+        if not (self.cc.matches(enums.KEYWORD, 'while') or  self.current_tok.matches(enums.KEYWORD, 'While')):
             return res.failure(InvalidSyntaxError(
-                self.current_tok.pos_start, self.current_tok.pos_end,
-                f"Expected 'WHILE'"
+                self.cc.pos_start, self.cc.pos_end,
+                f"Expected 'while'"
             ))
 
         res.register_advancement()
@@ -260,9 +271,9 @@ class Parser:
         condition = res.register(self.expr())
         if res.error: return res
 
-        if not self.current_tok.matches(enums.KEYWORD, 'then'):
+        if not self.cc.matches(enums.KEYWORD, 'then'):
             return res.failure(InvalidSyntaxError(
-                self.current_tok.pos_start, self.current_tok.pos_end,
+                self.cc.pos_start, self.cc.pos_end,
                 f"Expected 'then'"
             ))
 
